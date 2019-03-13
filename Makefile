@@ -1,8 +1,8 @@
-sudoku: sudoku.o main.o
-	g++ -o sudoku sudoku.o main.o
+transform: sudoku.o transform.o
+	g++ -o transform sudoku.o transform.o
 
-main.o: main.cpp sudoku.h
-	g++ -c main.cpp
+transform.o: transform.cpp sudoku.h
+	g++ -c transform.cpp
 
 Sudoku.o: sudoku.cpp sudoku.h
 	g++ -c sudoku.cpp

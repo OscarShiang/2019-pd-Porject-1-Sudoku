@@ -6,6 +6,10 @@ Sudoku::Sudoku() {
     board.assign(sudoku_size, 0);
 }
 
+Sudoku::Sudoku(const vector <int> ipt) {
+    board.assign(ipt.begin(), ipt.end());
+}
+
 void Sudoku::printBoard() {
     for (int i = 0; i < sudoku_size; i ++) {
         if (i % 9 == 0)

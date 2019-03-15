@@ -7,6 +7,7 @@ class Sudoku {
   public:
     // constructor
     Sudoku();
+    Sudoku(const std::vector <int> ipt);
 
     // set and print out functions
     void printBoard();

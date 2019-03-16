@@ -25,6 +25,22 @@ void Sudoku::setBoard(const vector <int> ipt) {
     board.assign(ipt.begin(), ipt.end());
 }
 
+void Sudoku::setElement(int index, int value) {
+    board.at(index) = value;
+}
+
+int Sudoku::getElement(int index) {
+    return board.at(index);
+}
+
+int Sudoku::getFirstZero(int pos) {
+    for (int i = pos; i < sudoku_size; i ++) {
+        if (board.at(i) == 0)
+            return i;
+    }
+    return -1;
+}
+
 void Sudoku::swapNum(int x, int y) {
     for (int i = 0; i < sudoku_size; i ++) {
         if (board.at(i) == x)
@@ -84,4 +100,48 @@ void Sudoku::flip(int x) {
                 j -= 9;
         }
     }
+}
+
+bool Sudoku::isSafe(int index, int target) {
+    // check for row 
+    for (int i = index - index % 9; i <= index - index % 9 + 8; i ++) {
+        if (i == index)
+            continue;
+        if (board.at(i) == target)
+            return false;
+    }
+
+    // check for col
+    for (int i = index % 9; i <= (index % 9) + 72; i += 9) {
+        if (i == index)
+            continue;
+        if (board.at(i) == target)
+            return false;
+    }
+
+    // check for unity
+    int center;
+    if (index % 9 <= 2 && index % 9 >= 0) 
+        center = 1;
+    else if (index % 9 <= 5 && index % 9 >= 3) 
+        center = 4;
+    else if (index % 9 <= 8 && index % 9 >= 6) 
+        center = 7;
+
+    if (index / 9 <= 2 && index / 9 >= 0) 
+        center += 9 * 1;
+    else if (index / 9 <= 5 && index / 9 >= 3) 
+        center += 9 * 4;
+    else if (index / 9 <= 8 && index / 9 >= 6) 
+        center += 9 * 7;
+
+    for (int i = -9; i <= 9; i += 9) {
+        for (int j = -1; j <= 1; j ++) {
+            if (center + i + j == index)
+                continue;
+            if (board.at(center + i + j) == target)
+                return false;
+        }
+    }
+    return true;
 }

@@ -25,7 +25,7 @@ int main(void) {
         }
         else if (command == 3) {
             cin >> opt >> opt2;
-            sudoku.swapRow(opt, opt2);
+            sudoku.swapCol(opt, opt2);
         }
         else if (command == 4) {
             cin >> opt;

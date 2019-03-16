@@ -18,24 +18,19 @@ int main(void) {
         else if (command == 1) {
             cin >> opt >> opt2;
             sudoku.swapNum(opt, opt2);
-        }
-        else if (command == 2) {
+        } else if (command == 2) {
             cin >> opt >> opt2;
             sudoku.swapRow(opt, opt2);
-        }
-        else if (command == 3) {
+        } else if (command == 3) {
             cin >> opt >> opt2;
             sudoku.swapCol(opt, opt2);
-        }
-        else if (command == 4) {
+        } else if (command == 4) {
             cin >> opt;
             sudoku.rotate(opt);
-        }
-        else if (command == 5) {
+        } else if (command == 5) {
             cin >> opt;
             sudoku.flip(opt);
-        }
-        else 
+        } else
             throw "command not found\n";
     }
     sudoku.printBoard();

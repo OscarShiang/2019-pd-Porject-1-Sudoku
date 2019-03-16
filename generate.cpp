@@ -6,8 +6,6 @@ using namespace std;
 
 int main(void) {
     srand(time(NULL));
-    Sudoku sudoku;
-    vector <int> board;
     int seed[3][81] = {{0, 0, 0, 5, 0, 1, 0, 0, 3,
                         6, 8, 0, 0, 0, 9, 5, 4, 0,
                         5, 0, 0, 7, 0, 0, 0, 0, 2,
@@ -40,8 +38,7 @@ int main(void) {
 
     // load initial board from seed
     int index = rand() % 3;
-    board.assign(seed[index], seed[index] + 81);
-    sudoku.setBoard(board);
+    Sudoku sudoku(vector <int> (seed[index], seed[index] + 81));
     
     // transform the board randomly
     int times = rand() % 5 + 1;
@@ -63,7 +60,7 @@ int main(void) {
             int x = rand() % 3, y = rand() % 3;
             while (x == y)
                 y = rand() % 3;
-            sudoku.swapRow(x, y);
+            sudoku.swapCol(x, y);
         }
         else if (command == 4) {
             int x = rand() % 100 + 1;

@@ -21,6 +21,17 @@ void Sudoku::printBoard() {
     }
 }
 
+void Sudoku::printAns() {
+    for (int i = 0; i < sudoku_size; i ++) {
+        if (i % 9 == 0)
+            cout << ans.at(i);
+        else
+            cout << ' ' << ans.at(i);
+        if (i % 9 == 8)
+            cout << '\n';
+    }
+}
+
 void Sudoku::setBoard(const vector <int> ipt) {
     board.assign(ipt.begin(), ipt.end());
 }
@@ -45,7 +56,7 @@ void Sudoku::swapNum(int x, int y) {
     for (int i = 0; i < sudoku_size; i ++) {
         if (board.at(i) == x)
             board.at(i) = y;
-        else if (board.at(i) == y) 
+        else if (board.at(i) == y)
             board.at(i) = x;
     }
 }
@@ -88,12 +99,10 @@ void Sudoku::flip(int x) {
             if (i % 9 == 3) {
                 i += 6;
                 j += 9;
-            }
-            else
+            } else
                 i ++;
         }
-    }
-    else {
+    } else {
         for (int i = 0, j = 72; i < 36; i ++) {
             swap(board.at(i), board.at(j + i % 9));
             if (i % 9 == 8)
@@ -103,7 +112,7 @@ void Sudoku::flip(int x) {
 }
 
 bool Sudoku::isSafe(int index, int target) {
-    // check for row 
+    // check for row
     for (int i = index - index % 9; i <= index - index % 9 + 8; i ++) {
         if (i == index)
             continue;
@@ -121,18 +130,18 @@ bool Sudoku::isSafe(int index, int target) {
 
     // check for unity
     int center;
-    if (index % 9 <= 2 && index % 9 >= 0) 
+    if (index % 9 <= 2 && index % 9 >= 0)
         center = 1;
-    else if (index % 9 <= 5 && index % 9 >= 3) 
+    else if (index % 9 <= 5 && index % 9 >= 3)
         center = 4;
-    else if (index % 9 <= 8 && index % 9 >= 6) 
+    else if (index % 9 <= 8 && index % 9 >= 6)
         center = 7;
 
-    if (index / 9 <= 2 && index / 9 >= 0) 
+    if (index / 9 <= 2 && index / 9 >= 0)
         center += 9 * 1;
-    else if (index / 9 <= 5 && index / 9 >= 3) 
+    else if (index / 9 <= 5 && index / 9 >= 3)
         center += 9 * 4;
-    else if (index / 9 <= 8 && index / 9 >= 6) 
+    else if (index / 9 <= 8 && index / 9 >= 6)
         center += 9 * 7;
 
     for (int i = -9; i <= 9; i += 9) {
@@ -144,4 +153,8 @@ bool Sudoku::isSafe(int index, int target) {
         }
     }
     return true;
+}
+
+void Sudoku::solved() {
+    ans.assign(board.begin(), board.end());
 }

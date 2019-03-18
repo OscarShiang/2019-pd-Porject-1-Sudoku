@@ -4,21 +4,19 @@
 using namespace std;
 
 Sudoku sudoku;
-int pos = 0;
+int pos = 0, cnt = 0;
 
 bool solve() {
-    int index = sudoku.getFirstZero(pos);
+    int index = sudoku.getFirstZero(0);
     if (index == -1) {
+        cnt ++;
         return true;
     }
     for (int i = 1; i <= 9; i ++) {
         if (sudoku.isSafe(index, i)) {
             sudoku.setElement(index, i);
-            pos = index;
-            if (solve())
-                return true;
-            else
-                sudoku.setElement(index, 0);
+            solve();
+            sudoku.setElement(index, 0);
         }
     }
     return false;
@@ -38,14 +36,13 @@ int main (void) {
     vector <int> board;
     board.assign(81, 0);
     for (int i = 0; i < sudoku.sudoku_size; i ++)
-      cin >> board.at(i);
+        cin >> board.at(i);
     sudoku.setBoard(board);
-
-    sudoku.printBoard();
     solve();
 
-    cout << "\n";
-    sudoku.printBoard();
+    cout <<  min(cnt, 2) << '\n';
+    if (cnt == 1)
+        sudoku.printBoard();
 
     return 0;
 }

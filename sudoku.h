@@ -11,6 +11,7 @@ class Sudoku {
 
     // set and print out functions
     void printBoard();
+    void printAns();
     void setBoard(const std::vector <int> ipt);
     void setElement(int index, int value);
     int getElement(int index);
@@ -25,11 +26,13 @@ class Sudoku {
 
     // solve methods
     bool isSafe(int index, int target);
+    void solved();
 
     static const int sudoku_size = 81;
 
   private:
     std::vector <int> board;
+    std::vector <int> ans;
 };
 
 #endif

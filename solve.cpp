@@ -10,6 +10,7 @@ bool solve() {
     int index = sudoku.getFirstZero(0);
     if (index == -1) {
         cnt ++;
+        sudoku.solved();
         return true;
     }
     for (int i = 1; i <= 9; i ++) {
@@ -42,7 +43,7 @@ int main (void) {
 
     cout <<  min(cnt, 2) << '\n';
     if (cnt == 1)
-        sudoku.printBoard();
+        sudoku.printAns();
 
     return 0;
 }

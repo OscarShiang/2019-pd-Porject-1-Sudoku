@@ -1,6 +1,5 @@
 #include <iostream>
 #include <cstdlib>
-#include <vector>
 #include "sudoku.h"
 using namespace std;
 

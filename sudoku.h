@@ -27,6 +27,7 @@ class Sudoku {
     void solve(); // main entry
     void solve(int board[][9], int allowedValues[][9]);
     void check(int board[][9], int allowedValues[][9]);
+    void check(int board[][9], int i, int j, int allowedValues[][9]);
     void fill(int board[][9], int allowedValues[][9]);
     void setValue(int board[][9], int i, int j, int value, int allowedValues[][9]);
     int getMin(int board[][9], int allowedValues[][9]);

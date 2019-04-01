@@ -54,7 +54,8 @@ void Sudoku::swapNum(int x, int y) {
 }
 
 void Sudoku::swapRow(int x, int y) {
-    x *= 3; y *= 3;
+    x *= 3;
+    y *= 3;
     for (int i = 0; i < 3; i ++) {
         for (int j = 0; j < 9; j ++)
             swap(board[x + i][j], board[y + i][j]);
@@ -62,7 +63,8 @@ void Sudoku::swapRow(int x, int y) {
 }
 
 void Sudoku::swapCol(int x, int y) {
-    x *= 3; y *= 3;
+    x *= 3;
+    y *= 3;
     for (int i = 0; i < 3; i ++) {
         for (int j = 0; j < 9; j ++)
             swap(board[j][x + i], board[j][y + i]);
@@ -203,6 +205,40 @@ void Sudoku::check(int board[][9], int allowedValues[][9]) {
     }
 }
 
+void Sudoku::check(int board[][9], int i, int j, int allowedValues[][9]) {
+    if (board[i][j] > 0) {
+        // check row
+        allowedValues[i][j] = 0;
+        for (int a = 0; a < 9; a ++) {
+            if (board[i][a] > 0)
+                continue;
+            if (allowedValues[i][a] & 1 << (board[i][j] - 1)) {
+                allowedValues[i][a] ^= 1 << (board[i][j] - 1);
+            }
+        }
+
+        // check col
+        for (int b = 0; b < 9; b ++) {
+            if (board[b][j] > 0)
+                continue;
+            if (allowedValues[b][j] & 1 << (board[i][j] - 1)) {
+                allowedValues[b][j] ^= 1 << (board[i][j] - 1);
+            }
+        }
+
+        // check cell
+        for (int a = i / 3 * 3; a < i / 3 * 3 + 3; a ++) {
+            for (int b = j / 3 * 3; b < j / 3 * 3 + 3; b ++) {
+                if (board[a][b] > 0)
+                    continue;
+                if (allowedValues[a][b] & 1 << (board[i][j] - 1)) {
+                    allowedValues[a][b] ^= 1 << (board[i][j] - 1);
+                }
+            }
+        }
+    }
+}
+
 void Sudoku::fill(int board[][9], int allowedValues[][9]) {
     for (int i = 0; i < 9; i ++) {
         for (int j = 0; j < 9; j ++) {
@@ -231,8 +267,7 @@ int Sudoku::getMin(int board[][9], int allowedValues[][9]) {
 void Sudoku::setValue(int board[][9], int i, int j, int value, int allowedValues[][9]) {
     if (allowedValues[i][j] & (1 << (value - 1))) {
         board[i][j] = value;
-        // check(board, i, j, allowedValues);
-        check(board, allowedValues);
+        check(board, i, j, allowedValues);
     }
 }
 

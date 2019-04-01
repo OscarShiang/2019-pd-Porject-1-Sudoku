@@ -1,6 +1,12 @@
-solve generate transform: sudoku.o solve.o generate.o transform.o
+all: solve generate transform
+
+solve: solve.o sudoku.o
 	g++ -o solve sudoku.o solve.o
+
+generate: generate.o sudoku.o
 	g++ -o generate sudoku.o generate.o
+
+transform: transform.o sudoku.o
 	g++ -o transform sudoku.o transform.o
 
 solve.o: sudoku.h solve.cpp

@@ -1,41 +1,28 @@
 #include <iostream>
-#include <vector>
 #include "sudoku.h"
 using namespace std;
 
 Sudoku sudoku;
-int pos = 0, cnt = 0;
-
-bool solve() {
-    int index = sudoku.getFirstZero(pos);
-    if (index == -1) {
-        cnt ++;
-        sudoku.solved();
-        return true;
-    }
-    for (int i = 1; i <= 9; i ++) {
-        if (sudoku.isSafe(index, i)) {
-            sudoku.setElement(index, i);
-            pos = index;
-            solve();
-            sudoku.setElement(index, 0);
-            pos = index;
-        }
-    }
-    return false;
-}
 
 int main (void) {
-    vector <int> board;
-    board.assign(81, 0);
-    for (int i = 0; i < sudoku.sudoku_size; i ++)
-        cin >> board.at(i);
+    int board[9][9];
+    for (int i = 0; i < 9; i ++) {
+        for (int j = 0; j < 9; j ++) 
+            cin >> board[i][j];
+    }
     sudoku.setBoard(board);
-    solve();
-
-    cout <<  min(cnt, 2) << '\n';
-    if (cnt == 1)
+    sudoku.solve();
+    cout << sudoku.solCnt << '\n';
+    if (sudoku.solCnt == 1)
         sudoku.printAns();
+    // int tmp;
+    // while (cin >> tmp) {
+    //     vector <int> list = sudoku.allowedValuesList(tmp);
+    //     for (int i = 0; i < list.size(); i ++) {
+    //         cout << list.at(i) << ' ';
+    //     }
+    //     cout << '\n';
+    // }
 
     return 0;
 }

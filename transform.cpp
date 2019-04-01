@@ -1,14 +1,14 @@
 #include <iostream>
-#include <vector>
 #include "sudoku.h"
 using namespace std;
 
 int main(void) {
     Sudoku sudoku;
-    vector <int> board;
-    board.assign(sudoku.sudoku_size, 0);
-    for (int i = 0; i < sudoku.sudoku_size; i ++)
-        cin >> board.at(i);
+    int board[9][9];
+    for (int i = 0; i < 9; i ++) {
+        for (int j = 0 ; j < 9; j ++)
+            cin >> board[i][j];
+    }
     sudoku.setBoard(board);
     int command = -1, opt, opt2;
     while (true) {

@@ -1,91 +1,81 @@
 #include <iostream>
+#include <cmath>
 #include "sudoku.h"
 using namespace std;
 
 Sudoku::Sudoku() {
-    board.assign(sudoku_size, 0);
+    solCnt = 0;
+    for (int i = 0; i < 9; i ++) {
+        for (int j = 0; j < 9; j ++) {
+            board[i][j] = 0;
+        }
+    }
+    for (int i = 0; i < 9; i ++) {
+        for (int j = 0; j < 9; j ++) 
+            allowedValues[i][j] = 511;
+    }
 }
 
-Sudoku::Sudoku(const vector <int> ipt) {
-    board.assign(ipt.begin(), ipt.end());
+Sudoku::Sudoku(const int ipt[][9]) {
+    solCnt = 0;
+    setBoard(ipt);
+    for (int i = 0; i < 9; i ++) {
+        for (int j = 0; j < 9; j ++) 
+            allowedValues[i][j] = 511;
+    }
 }
 
 void Sudoku::printBoard() {
-    for (int i = 0; i < sudoku_size; i ++) {
-        if (i % 9 == 0)
-            cout << board.at(i);
-        else
-            cout << ' ' << board.at(i);
-        if (i % 9 == 8)
-            cout << '\n';
+    for (int i = 0; i < 9; i ++) {
+        cout << board[i][0];
+        for (int j = 1; j < 9; j ++) 
+            cout << ' ' << board[i][j];
+        cout << '\n';
     }
 }
 
-void Sudoku::printAns() {
-    for (int i = 0; i < sudoku_size; i ++) {
-        if (i % 9 == 0)
-            cout << ans.at(i);
-        else
-            cout << ' ' << ans.at(i);
-        if (i % 9 == 8)
-            cout << '\n';
+void Sudoku::setBoard(const int ipt[][9]) {
+    // set the initial board
+    for (int i = 0; i < 9; i ++) {
+        for (int j = 0; j < 9; j ++) 
+            board[i][j] = ipt[i][j];
     }
-}
-
-void Sudoku::setBoard(const vector <int> ipt) {
-    board.assign(ipt.begin(), ipt.end());
-}
-
-void Sudoku::setElement(int index, int value) {
-    board.at(index) = value;
-}
-
-int Sudoku::getElement(int index) {
-    return board.at(index);
-}
-
-int Sudoku::getFirstZero(int pos) {
-    for (int i = pos; i < sudoku_size; i ++) {
-        if (board.at(i) == 0)
-            return i;
-    }
-    return -1;
 }
 
 void Sudoku::swapNum(int x, int y) {
-    for (int i = 0; i < sudoku_size; i ++) {
-        if (board.at(i) == x)
-            board.at(i) = y;
-        else if (board.at(i) == y)
-            board.at(i) = x;
+    for (int i = 0; i < 9; i ++) {
+        for (int j = 0; j < 9; j ++) {
+            if (board[i][j] == x)
+                board[i][j] = y;
+            else if (board[i][j] == y)
+                board[i][j] = x;
+        }
     }
 }
 
 void Sudoku::swapRow(int x, int y) {
-    for (int i = 0; i < 27; i ++)
-        swap(board.at(i + 27 * x), board.at(i + 27 * y));
+    x *= 3 * 3; y *= 3;
+    for (int i = 0; i < 3; i ++) {
+        for (int j = 0; j < 9; j ++)
+            swap(board[x + i][j], board[y + i][j]);
+    }
 }
 
 void Sudoku::swapCol(int x, int y) {
-    int i = 0;
-    while (i < 75) {
-        swap(board.at(i + x * 3), board.at(i + y * 3));
-        if (i % 9 == 2)
-            i += 7;
-        else
-            i ++;
+    x *= 3; y *= 3;
+    for (int i = 0; i < 3; i ++) {
+        for (int j = 0; j < 9; j ++)
+            swap(board[j][x + i], board[j][y + i]);
     }
 }
 
 void Sudoku::rotate(int x) {
-    vector <int> tmp;
+    int tmp[9][9];
     x %= 4;
     while (x --) {
-        tmp.assign(sudoku_size, 0);
-        for (int i = 0, j = 72; i < sudoku_size; i ++) {
-            tmp.at(i) = board.at(j - 9 * (i % 9));
-            if (j - 9 * (i % 9) < 9)
-                j ++;
+        for (int i = 0; i < 9; i ++) {
+            for (int j = 0; j < 9; j ++)
+                tmp[j][8 - i] = board[i][j];
         }
         setBoard(tmp);
     }
@@ -93,68 +83,162 @@ void Sudoku::rotate(int x) {
 
 void Sudoku::flip(int x) {
     if (x) {
-        int i = 0, j = 8;
-        while (i < 76) {
-            swap(board.at(i), board.at(j - i % 9));
-            if (i % 9 == 3) {
-                i += 6;
-                j += 9;
-            } else
-                i ++;
+        for (int i = 0; i < 4; i ++) {
+            for (int j = 0; j < 9; j ++)
+                swap(board[j][i], board[j][8 - i]);
         }
     } else {
-        for (int i = 0, j = 72; i < 36; i ++) {
-            swap(board.at(i), board.at(j + i % 9));
-            if (i % 9 == 8)
-                j -= 9;
+        for (int i = 0; i < 4; i ++) {
+            for (int j = 0; i < 9; j ++)
+                swap(board[i][j], board[8 - i][j]);
         }
     }
 }
 
-bool Sudoku::isSafe(int index, int target) {
-    // check for row
-    for (int i = index - index % 9; i <= index - index % 9 + 8; i ++) {
-        if (i == index)
-            continue;
-        if (board.at(i) == target)
-            return false;
+void Sudoku::printAns() {
+    for (int i = 0; i < 9; i ++) {
+        cout << ans[i][0];
+        for (int j = 1; j < 9; j ++) 
+            cout << ' ' << ans[i][j];
+        cout << '\n';
     }
+}
 
-    // check for col
-    for (int i = index % 9; i <= (index % 9) + 72; i += 9) {
-        if (i == index)
-            continue;
-        if (board.at(i) == target)
-            return false;
+int countOnes(int value) {
+    int cnt = 0;
+    for (int i = 0; i < 9; i ++) {
+        if (value & (1 << i))
+            cnt ++;
     }
+    return cnt;
+}
 
-    // check for unity
-    int center;
-    if (index % 9 <= 2 && index % 9 >= 0)
-        center = 1;
-    else if (index % 9 <= 5 && index % 9 >= 3)
-        center = 4;
-    else if (index % 9 <= 8 && index % 9 >= 6)
-        center = 7;
+void Sudoku::solve() {
+    // main entry
+    solve(board, allowedValues);
+}
 
-    if (index / 9 <= 2 && index / 9 >= 0)
-        center += 9 * 1;
-    else if (index / 9 <= 5 && index / 9 >= 3)
-        center += 9 * 4;
-    else if (index / 9 <= 8 && index / 9 >= 6)
-        center += 9 * 7;
+void Sudoku::solve(int board[][9], int allowedValues[][9]) {
+    check(board, allowedValues);
+    fill(board, allowedValues);
+    if (countLeft(board) > 0) {
+        int pos = getMin(board, allowedValues);
 
-    for (int i = -9; i <= 9; i += 9) {
-        for (int j = -1; j <= 1; j ++) {
-            if (center + i + j == index)
+        for (int i = 0; i < 9; i ++) {
+            if (allowedValues[pos / 9][pos % 9] & (1 << i)) {
+                int tmpBoard[9][9], tmpAllowed[9][9];
+                for (int a = 0; a < 9; a ++) {
+                    for (int b = 0; b < 9; b ++) {
+                        tmpBoard[a][b] = board[a][b];
+                        tmpAllowed[a][b] = allowedValues[a][b];
+                    }
+                }
+
+                setValue(board, pos / 9, pos % 9, i + 1, allowedValues);
+                solve(board, allowedValues);
+
+                if (countLeft(board) == 0) {
+                    solCnt ++;
+                    if (solCnt > 1)
+                        return;
+                    for (int a = 0; a < 9; a ++) {
+                        for (int b = 0; b < 9; b ++) {
+                            ans[a][b] = board[a][b];
+                        }
+                    }
+                }
+
+                for (int a = 0; a < 9; a ++) {
+                    for (int b = 0; b < 9; b ++) {
+                        board[a][b] = tmpBoard[a][b];
+                        allowedValues[a][b] = tmpAllowed[a][b];
+                    }
+                }
+                if (allowedValues[pos / 9][pos % 9] & (1 << i)) {
+                    allowedValues[pos / 9][pos % 9] ^= (1 << i);
+                }
+            }
+        }
+    }
+}
+
+void Sudoku::check(int board[][9], int allowedValues[][9]) {
+    for (int i = 0; i < 9; i ++) {
+        for (int j = 0; j < 9; j ++) {
+            if (board[i][j] > 0) {
+                // check row
+                for (int a = 0; a < 9; a ++) {
+                    if (board[i][a] > 0)
+                        continue;
+                    if (allowedValues[i][a] & 1 << (board[i][j] - 1)) {
+                        allowedValues[i][a] ^= 1 << (board[i][j] - 1);
+                    }
+                }
+
+                // check col
+                for (int b = 0; b < 9; b ++) {
+                    if (board[b][j] > 0)
+                        continue;
+                    if (allowedValues[b][j] & 1 << (board[i][j] - 1)) {
+                        allowedValues[b][j] ^= 1 << (board[i][j] - 1);
+                    }
+                }
+
+                // check cell
+                for (int a = i / 3 * 3; a < i / 3 * 3 + 3; a ++) {
+                    for (int b = j / 3 * 3; b < j / 3 * 3 + 3; b ++) {
+                        if (board[a][b] > 0)
+                            continue;
+                        if (allowedValues[a][b] & 1 << (board[i][j] - 1)) {
+                            allowedValues[a][b] ^= 1 << (board[i][j] - 1);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+void Sudoku::fill(int board[][9], int allowedValues[][9]) {
+    for (int i = 0; i < 9; i ++) {
+        for (int j = 0; j < 9; j ++) {
+            if (board[i][j] == 0 && countOnes(allowedValues[i][j]) == 1) {
+                setValue(board, i, j, log2(allowedValues[i][j]) + 1, allowedValues);
+            }
+        }
+    }
+}
+
+int Sudoku::getMin(int board[][9], int allowedValues[][9]) {
+    int index = -1, mini = 10;
+    for (int i = 0; i < 9; i ++) {
+        for (int j = 0; j < 9; j ++) {
+            if (board[i][j] > 0)
                 continue;
-            if (board.at(center + i + j) == target)
-                return false;
+            else if (countOnes(allowedValues[i][j]) < mini) {
+                index = i * 9 + j;
+                mini = countOnes(allowedValues[i][j]);
+            }
         }
     }
-    return true;
+    return index;
 }
 
-void Sudoku::solved() {
-    ans.assign(board.begin(), board.end());
+void Sudoku::setValue(int board[][9], int i, int j, int value, int allowedValues[][9]) {
+    if (allowedValues[i][j] & (1 << (value - 1))) {
+        board[i][j] = value;
+        // check(board, i, j, allowedValues); 
+        check(board, allowedValues);
+    }
+}
+
+int Sudoku::countLeft(int board[][9]) {
+    int cnt = 0;
+    for (int i = 0; i < 9; i ++) {
+        for (int j = 0; j < 9; j ++) {
+            if (board[i][j] == 0)
+                cnt ++;
+        }
+    }
+    return cnt;
 }

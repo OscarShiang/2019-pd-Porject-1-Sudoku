@@ -2,20 +2,19 @@
 #define SUDOKU_H
 
 #include <vector>
+using std::vector;
 
 class Sudoku {
   public:
     // constructor
     Sudoku();
-    Sudoku(const std::vector <int> ipt);
+    Sudoku(const int ipt[][9]);
 
     // set and print out functions
     void printBoard();
+    void setBoard(const int ipt[][9]);
     void printAns();
-    void setBoard(const std::vector <int> ipt);
-    void setElement(int index, int value);
-    int getElement(int index);
-    int getFirstZero(int pos);
+    // void setAns(const int ipt[][9]);
 
     // transform operations
     void swapNum(int x, int y);
@@ -24,15 +23,21 @@ class Sudoku {
     void rotate(int x);
     void flip(int x); // 0 -> up-down flip; 1 -> left-right flip
 
-    // solve methods
-    bool isSafe(int index, int target);
-    void solved();
-
-    static const int sudoku_size = 81;
+    // solve operations
+    void solve(); // main entry
+    void solve(int board[][9], int allowedValues[][9]);
+    void check(int board[][9], int allowedValues[][9]);
+    void fill(int board[][9], int allowedValues[][9]);
+    void setValue(int board[][9], int i, int j, int value, int allowedValues[][9]);
+    int getMin(int board[][9], int allowedValues[][9]);
+    int countLeft(int board[][9]);
+    
+    int solCnt;
+    int allowedValues[9][9];
 
   private:
-    std::vector <int> board;
-    std::vector <int> ans;
+    int board[9][9];
+    int ans[9][9];
 };
 
 #endif

@@ -54,8 +54,7 @@ void Sudoku::swapNum(int x, int y) {
 }
 
 void Sudoku::swapRow(int x, int y) {
-    x *= 3 * 3;
-    y *= 3;
+    x *= 3; y *= 3;
     for (int i = 0; i < 3; i ++) {
         for (int j = 0; j < 9; j ++)
             swap(board[x + i][j], board[y + i][j]);
@@ -63,8 +62,7 @@ void Sudoku::swapRow(int x, int y) {
 }
 
 void Sudoku::swapCol(int x, int y) {
-    x *= 3;
-    y *= 3;
+    x *= 3; y *= 3;
     for (int i = 0; i < 3; i ++) {
         for (int j = 0; j < 9; j ++)
             swap(board[j][x + i], board[j][y + i]);
@@ -73,6 +71,10 @@ void Sudoku::swapCol(int x, int y) {
 
 void Sudoku::rotate(int x) {
     int tmp[9][9];
+    for (int i = 0; i < 9; i ++) {
+        for (int j = 0; j < 9; j ++)
+            tmp[i][j] = 0;
+    }
     x %= 4;
     while (x --) {
         for (int i = 0; i < 9; i ++) {

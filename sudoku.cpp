@@ -130,28 +130,28 @@ void Sudoku::solve(int board[][9], int allowedValues[][9]) {
     left -= fill(board, allowedValues);
     if (left > 0) {
         int pos = getMin(board, allowedValues);
-        bruteforce(board, pos / 9, pos % 9, allowedValues, left);
+        bruteforce(board, pos / 9, pos % 9, allowedValues);
     }
 }
 
-void Sudoku::bruteforce(int board[][9], int i, int j, int allowedValues[][9], int left) {
+void Sudoku::bruteforce(int board[][9], int i, int j, int allowedValues[][9]) {
     for (int x = 0; x < 9; x ++) {
         if (allowedValues[i][j] & (1 << x)) {
-            int tmpBoard[9][9], tmpAllowed[9][9], tmpLeft = left;
+            int tmpBoard[9][9], tmpAllowed[9][9];
             for (int a = 0; a < 9; a ++) {
                 for (int b = 0; b < 9; b ++) {
                     tmpBoard[a][b] = board[a][b];
                     tmpAllowed[a][b] = allowedValues[a][b];
                 }
             }
-            left -= setValue(board, i, j, x + 1, allowedValues);
+            setValue(board, i, j, x + 1, allowedValues);
 
             int pos = getMin(board, allowedValues);
             if (pos != -1) {
-                bruteforce(board, pos / 9, pos % 9, allowedValues, left);
+                bruteforce(board, pos / 9, pos % 9, allowedValues);
             }
 
-            if (left == 0) {
+            else {
                 solCnt ++;
                 if (solCnt > 1)
                     return;
@@ -161,7 +161,6 @@ void Sudoku::bruteforce(int board[][9], int i, int j, int allowedValues[][9], in
                     }
                 }
             }
-            left = tmpLeft;
             for (int a = 0; a < 9; a ++) {
                 for (int b = 0; b < 9; b ++) {
                     board[a][b] = tmpBoard[a][b];

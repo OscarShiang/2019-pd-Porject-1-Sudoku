@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include <algorithm>
 #include "sudoku.h"
 using namespace std;
 

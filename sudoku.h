@@ -32,7 +32,7 @@ class Sudoku {
     int fill(int board[][9], int allowedValues[][9]);
     int setValue(int board[][9], int i, int j, int value, int allowedValues[][9]);
     int getMin(int board[][9], int allowedValues[][9]);
-    int countLeft(int board[][9]);
+    bool checkLeft(int board[][9]); // cell left -> true; all-completed -> false
 
     int solCnt;
     int allowedValues[9][9];

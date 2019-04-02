@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cmath>
+#include <vector>
 #include "sudoku.h"
 using namespace std;
 
@@ -129,7 +130,6 @@ void Sudoku::solve(int board[][9], int allowedValues[][9]) {
     check(board, allowedValues);
     left -= fill(board, allowedValues);
     left -= lema(board, allowedValues);
-    left -= fill(board, allowedValues);
     if (left > 0) {
         int pos = getMin(board, allowedValues);
         bruteforce(board, pos / 9, pos % 9, allowedValues);
@@ -248,12 +248,22 @@ void Sudoku::check(int board[][9], int i, int j, int allowedValues[][9]) {
 }
 
 int Sudoku::fill(int board[][9], int allowedValues[][9]) {
-    int cnt = 0;
-    int pos = getMin(board, allowedValues), prev;
-    while (pos != -1) {
-        prev = cnt;
-        if (board[pos / 9][pos % 9] == 0 && countOnes(allowedValues[pos / 9][pos % 9]) == 1) {
-            cnt += setValue(board, pos / 9, pos % 9, log2(allowedValues[pos / 9][pos % 9]) + 1, allowedValues);
+    int cnt = 0, prev, i, j;
+    // int pos = getMin(board, allowedValues), prev;
+    // while (pos != -1) {
+    //     prev = cnt;
+    //     int i = pos / 9, j = pos % 9;
+    //     if (board[i][j] == 0 && countOnes(allowedValues[i][j]) == 1) {
+    //         cnt += setValue(board, i, j, log2(allowedValues[i][j]) + 1, allowedValues);
+    //     }
+    //     if (prev == cnt)
+    //         break;
+    // }
+    vector < vector<int> > pos = getMinList(board, allowedValues);
+    for (vector < vector <int> >::iterator it = pos.begin(); it != pos.end(); it ++) {
+        prev = cnt; i = (*it)[0], j = (*it)[1];
+        if (board[i][j] == 0 && countOnes(allowedValues[i][j]) == 1) {
+            cnt +=setValue(board, i, j, log2(allowedValues[i][j]) + 1, allowedValues);
         }
         if (prev == cnt)
             break;
@@ -307,13 +317,33 @@ int Sudoku::getMin(int board[][9], int allowedValues[][9]) {
         for (int j = 0; j < 9; j ++) {
             if (board[i][j] > 0)
                 continue;
-            if ((cnt = countOnes(allowedValues[i][j])) < mini) {
+            int cnt = countOnes(allowedValues[i][j]);
+            if (cnt < mini) {
                 index = i * 9 + j;
                 mini = cnt;
             }
         }
     }
     return index;
+}
+
+bool cmp(vector <int> a, vector <int> b) {
+    return a.at(2) < b.at(2);
+}
+
+vector < vector<int> > Sudoku::getMinList(int board[][9], int allowedValues[][9]) {
+    vector <vector<int> > candidate;
+    for (int i = 0; i < 9; i ++) {
+        for (int j = 0; j < 9; j ++) {
+            if (board[i][j] > 0)
+                continue;
+            vector <int> tmp;
+            tmp.push_back(i); tmp.push_back(j); tmp.push_back(countOnes(allowedValues[i][j]));
+            candidate.push_back(tmp);
+        }
+    }
+    sort(candidate.begin(), candidate.end(), cmp);
+    return candidate;
 }
 
 int Sudoku::setValue(int board[][9], int i, int j, int value, int allowedValues[][9]) {

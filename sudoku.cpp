@@ -150,8 +150,7 @@ void Sudoku::bruteforce(int board[][9], int i, int j, int allowedValues[][9]) {
                 bruteforce(board, pos / 9, pos % 9, allowedValues);
             }
 
-            // if (countLeft(board) == 0) {
-            else {
+            if (!checkLeft(board)) {
                 solCnt ++;
                 if (solCnt > 1)
                     return;
@@ -271,13 +270,12 @@ int Sudoku::setValue(int board[][9], int i, int j, int value, int allowedValues[
     return 1;
 }
 
-int Sudoku::countLeft(int board[][9]) {
-    int cnt = 0;
+bool Sudoku::checkLeft(int board[][9]) {
     for (int i = 0; i < 9; i ++) {
         for (int j = 0; j < 9; j ++) {
             if (board[i][j] == 0)
-                cnt ++;
+                return true;
         }
     }
-    return cnt;
+    return false;
 }

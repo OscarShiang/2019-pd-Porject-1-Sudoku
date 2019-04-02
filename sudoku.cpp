@@ -152,7 +152,7 @@ void Sudoku::bruteforce(int board[][9], int i, int j, int allowedValues[][9]) {
                 bruteforce(board, pos / 9, pos % 9, allowedValues);
             }
 
-            if (pos == -1) {
+            if (countLeft(board) == 0) {
                 solCnt ++;
                 if (solCnt > 1)
                     return;

@@ -130,8 +130,12 @@ void Sudoku::bruteforce(int board[][9], int allowedValues[][9]) {
     for (int i = 0; i < 9; i ++) {
         if (allowedValues[pos / 9][pos % 9] & (1 << i)) {
             int tmpBoard[9][9], tmpAllowed[9][9];
-            memcpy(tmpBoard, board, sizeof(int) * 81);
-            memcpy(tmpAllowed, allowedValues, sizeof(int) * 81);
+            for (int a = 0; a < 9; a ++) {
+                for (int b = 0; b < 9; b ++) {
+                    tmpBoard[a][b] = board[a][b];
+                    tmpAllowed[a][b] = allowedValues[a][b];
+                }
+            }
 
             setValue(board, pos / 9, pos % 9, i + 1, allowedValues);
 
@@ -145,8 +149,12 @@ void Sudoku::bruteforce(int board[][9], int allowedValues[][9]) {
                 memcpy(ans, board, sizeof(int) * 81);
             }
 
-            memcpy(board, tmpBoard, sizeof(int) * 81);
-            memcpy(allowedValues, tmpAllowed, sizeof(int) * 81);
+            for (int a = 0; a < 9; a ++) {
+                for (int b = 0; b < 9; b ++) {
+                    board[a][b] = tmpBoard[a][b];
+                    allowedValues[a][b] = tmpAllowed[a][b];
+                }
+            }
 
             if (allowedValues[pos / 9][pos % 9] & (1 << i))
                 allowedValues[pos / 9][pos % 9] ^= (1 << i);

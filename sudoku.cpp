@@ -254,8 +254,10 @@ int Sudoku::getMin(int board[][9], int allowedValues[][9]) {
 }
 
 int Sudoku::setValue(int board[][9], int i, int j, int value, int allowedValues[][9]) {
-    board[i][j] = value;
-    check(board, i, j, allowedValues);
+    if (allowedValues[i][j] & (1 << (value - 1)) && board[i][j] == 0) {
+        board[i][j] = value;
+        check(board, i, j, allowedValues);
+    }
     return 1;
 }
 

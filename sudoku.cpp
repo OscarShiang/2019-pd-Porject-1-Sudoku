@@ -125,18 +125,12 @@ void Sudoku::solve() {
 }
 
 void Sudoku::solve(int board[][9], int allowedValues[][9]) {
-    int prev = 0, placed;
+    int left = 81;
     check(board, allowedValues);
-    placed = 81 - countLeft(board);
-
-    while (placed - prev > 3 && placed < 68 && placed > 10) {
-        placed += fill(board, allowedValues);
-        placed += lema(board, allowedValues);
-        nakedPairs(allowedValues);
-        placed += fill(board, allowedValues);
-    }
-    if (placed < 81) {
-        nakedPairs(allowedValues);
+    left -= fill(board, allowedValues);
+    left -= lema(board, allowedValues);
+    left -= fill(board, allowedValues);
+    if (left > 0) {
         int pos = getMin(board, allowedValues);
         bruteforce(board, pos / 9, pos % 9, allowedValues);
     }
@@ -253,60 +247,17 @@ void Sudoku::check(int board[][9], int i, int j, int allowedValues[][9]) {
     }
 }
 
-void Sudoku::nakedPairs(int allowedValues[][9]) {
-    for (int i = 0; i < 9; i ++) {
-        for (int j = 0; j < 9; j ++) {
-            if (countOnes(allowedValues[i][j]) == 2) {
-                for (int scanning = j + 1; scanning < 9; scanning ++) {
-                    if (allowedValues[i][scanning] == allowedValues[i][j]) {
-                        int removeMask = !allowedValues[i][j];
-
-                        for (int apply = 0; apply < 9; apply ++) {
-                            if (apply != j && apply != scanning)
-                                allowedValues[i][apply] &= removeMask;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    for (int j = 0; j < 9; j ++) {
-        for (int i = 0; i < 9; i ++) {
-            if (allowedValues[i][j] != 0 && countOnes(allowedValues[i][j]) == 2) {
-                for (int scanning = i + 1; scanning < 9; scanning ++) {
-                    if (allowedValues[scanning][j] == allowedValues[i][j]) {
-                        int removeMask = !allowedValues[i][j];
-                        for (int apply = 0; apply < 9; apply ++) {
-                            if (apply != i && apply != scanning) {
-                                allowedValues[apply][j] &= removeMask;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
 int Sudoku::fill(int board[][9], int allowedValues[][9]) {
     int cnt = 0;
-    for (int i = 0; i < 9; i ++) {
-        for (int j = 0; j < 9; j ++) {
-            if (board[i][j] == 0 && countOnes(allowedValues[i][j]) == 1) {
-                cnt += setValue(board, i, j, log2(allowedValues[i][j]) + 1, allowedValues);
-            }
+    int pos = getMin(board, allowedValues), prev;
+    while (pos != -1) {
+        prev = cnt;
+        if (board[pos / 9][pos % 9] == 0 && countOnes(allowedValues[pos / 9][pos % 9]) == 1) {
+            cnt += setValue(board, pos / 9, pos % 9, log2(allowedValues[pos / 9][pos % 9]) + 1, allowedValues);
         }
+        if (prev == cnt)
+            break;
     }
-    // int pos = getMin(board, allowedValues), prev;
-    // while (pos != -1) {
-    //     prev = cnt;
-    //     if (board[pos / 9][pos % 9] == 0 && countOnes(allowedValues[pos / 9][pos % 9]) == 1) {
-    //         cnt += setValue(board, pos / 9, pos % 9, log2(allowedValues[pos / 9][pos % 9]) + 1, allowedValues);
-    //     }
-    //     if (prev == cnt)
-    //         break;
-    // }
     return cnt;
 }
 

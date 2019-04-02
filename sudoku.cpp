@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cmath>
+#include <cstring>
 #include "sudoku.h"
 using namespace std;
 
@@ -32,10 +33,7 @@ void Sudoku::printBoard() {
 
 void Sudoku::setBoard(const int ipt[][9]) {
     // set the initial board
-    for (int i = 0; i < 9; i ++) {
-        for (int j = 0; j < 9; j ++)
-            board[i][j] = ipt[i][j];
-    }
+    memcpy(board, ipt, sizeof(int) * 81);
 }
 
 void Sudoku::swapNum(int x, int y) {
@@ -69,10 +67,7 @@ void Sudoku::swapCol(int x, int y) {
 
 void Sudoku::rotate(int x) {
     int tmp[9][9];
-    for (int i = 0; i < 9; i ++) {
-        for (int j = 0; j < 9; j ++)
-            tmp[i][j] = 0;
-    }
+    memset(tmp, 0, sizeof(tmp));
     x %= 4;
     while (x --) {
         for (int i = 0; i < 9; i ++) {

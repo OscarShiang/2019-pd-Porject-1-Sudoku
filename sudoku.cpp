@@ -5,11 +5,7 @@ using namespace std;
 
 Sudoku::Sudoku() {
     solCnt = 0;
-    for (int i = 0; i < 9; i ++) {
-        for (int j = 0; j < 9; j ++) {
-            board[i][j] = 0;
-        }
-    }
+    memset(board, 0, sizeof(board));
     for (int i = 0; i < 9; i ++) {
         for (int j = 0; j < 9; j ++)
             allowedValues[i][j] = 511;
@@ -133,38 +129,30 @@ void Sudoku::solve(int board[][9], int allowedValues[][9]) {
 }
 
 void Sudoku::bruteforce(int board[][9], int allowedValues[][9]) {
+    if (solCnt > 1)
+        return;
     int pos = getMin(board, allowedValues);
     for (int i = 0; i < 9; i ++) {
         if (allowedValues[pos / 9][pos % 9] & (1 << i)) {
             int tmpBoard[9][9], tmpAllowed[9][9];
-            for (int a = 0; a < 9; a ++) {
-                for (int b = 0; b < 9; b ++) {
-                    tmpBoard[a][b] = board[a][b];
-                    tmpAllowed[a][b] = allowedValues[a][b];
-                }
-            }
+            memcpy(tmpBoard, board, sizeof(int) * 81);
+            memcpy(tmpAllowed, allowedValues, sizeof(int) * 81);
 
             setValue(board, pos / 9, pos % 9, i + 1, allowedValues);
+
             // solve(board, allowedValues);
             bruteforce(board, allowedValues);
 
             if (countLeft(board) == 0) {
                 solCnt ++;
-                if (solCnt > 1)
-                    return;
-                for (int a = 0; a < 9; a ++) {
-                    for (int b = 0; b < 9; b ++) {
-                        ans[a][b] = board[a][b];
-                    }
-                }
+                // if (solCnt > 1)
+                //     return;
+                memcpy(ans, board, sizeof(int) * 81);
             }
 
-            for (int a = 0; a < 9; a ++) {
-                for (int b = 0; b < 9; b ++) {
-                    board[a][b] = tmpBoard[a][b];
-                    allowedValues[a][b] = tmpAllowed[a][b];
-                }
-            }
+            memcpy(board, tmpBoard, sizeof(int) * 81);
+            memcpy(allowedValues, tmpAllowed, sizeof(int) * 81);
+
             if (allowedValues[pos / 9][pos % 9] & (1 << i))
                 allowedValues[pos / 9][pos % 9] ^= (1 << i);
         }
@@ -253,14 +241,14 @@ void Sudoku::fill(int board[][9], int allowedValues[][9]) {
 }
 
 int Sudoku::getMin(int board[][9], int allowedValues[][9]) {
-    int index = -1, mini = 10;
+    int index = -1, mini = 10, cnt;
     for (int i = 0; i < 9; i ++) {
         for (int j = 0; j < 9; j ++) {
             if (board[i][j] > 0)
                 continue;
-            else if (countOnes(allowedValues[i][j]) < mini) {
+            else if ((cnt = countOnes(allowedValues[i][j])) < mini) {
                 index = i * 9 + j;
-                mini = countOnes(allowedValues[i][j]);
+                mini = cnt;
             }
         }
     }
@@ -268,7 +256,7 @@ int Sudoku::getMin(int board[][9], int allowedValues[][9]) {
 }
 
 void Sudoku::setValue(int board[][9], int i, int j, int value, int allowedValues[][9]) {
-    if (allowedValues[i][j] & (1 << (value - 1))) {
+    if (allowedValues[i][j] & (1 << (value - 1)) && board[i][j] == 0) {
         board[i][j] = value;
         check(board, i, j, allowedValues);
     }

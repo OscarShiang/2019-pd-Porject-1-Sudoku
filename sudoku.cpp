@@ -128,14 +128,14 @@ void Sudoku::solve(int board[][9], int allowedValues[][9]) {
     check(board, allowedValues);
     fill(board, allowedValues);
     if (countLeft(board) > 0) {
-        bruteforce(board, allowedValues);
+        int pos = getMin(board, allowedValues);
+        bruteforce(board, pos / 9, pos % 9, allowedValues);
     }
 }
 
-void Sudoku::bruteforce(int board[][9], int allowedValues[][9]) {
-    int pos = getMin(board, allowedValues);
-    for (int i = 0; i < 9; i ++) {
-        if (allowedValues[pos / 9][pos % 9] & (1 << i)) {
+void Sudoku::bruteforce(int board[][9], int i, int j, int allowedValues[][9]) {
+    for (int x = 0; x < 9; x ++) {
+        if (allowedValues[i][j] & (1 << x)) {
             int tmpBoard[9][9], tmpAllowed[9][9];
             for (int a = 0; a < 9; a ++) {
                 for (int b = 0; b < 9; b ++) {
@@ -143,13 +143,15 @@ void Sudoku::bruteforce(int board[][9], int allowedValues[][9]) {
                     tmpAllowed[a][b] = allowedValues[a][b];
                 }
             }
-            setValue(board, pos / 9, pos % 9, i + 1, allowedValues);
-            
-            if (countLeft(board) > 0) {
-                bruteforce(board, allowedValues);
+            setValue(board, i, j, x + 1, allowedValues);
+
+            int pos = getMin(board, allowedValues);
+            if (pos != -1) {
+                bruteforce(board, pos / 9, pos % 9, allowedValues);
             }
 
-            if (countLeft(board) == 0) {
+            // if (countLeft(board) == 0) {
+            else {
                 solCnt ++;
                 if (solCnt > 1)
                     return;
@@ -166,8 +168,8 @@ void Sudoku::bruteforce(int board[][9], int allowedValues[][9]) {
                     allowedValues[a][b] = tmpAllowed[a][b];
                 }
             }
-            if (allowedValues[pos / 9][pos % 9] & (1 << i))
-                allowedValues[pos / 9][pos % 9] ^= (1 << i);
+            if (allowedValues[i][j] & (1 << x))
+                allowedValues[i][j] ^= (1 << x);
         }
     }
 }

@@ -26,7 +26,7 @@ class Sudoku {
     // solve operations
     void solve(); // main entry
     void solve(int board[][9], int allowedValues[][9]);
-    void bruteforce(int board[][9], int allowedValues[][9]);
+    void bruteforce(int board[][9], int i, int j, int allowedValues[][9]);
     void check(int board[][9], int allowedValues[][9]);
     void check(int board[][9], int i, int j, int allowedValues[][9]);
     void fill(int board[][9], int allowedValues[][9]);

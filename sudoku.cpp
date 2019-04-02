@@ -268,46 +268,6 @@ int Sudoku::fill(int board[][9], int allowedValues[][9]) {
     return cnt;
 }
 
-int Sudoku::lema(int board[][9], int allowedValues[][9]) {
-    int cnt = 0;
-    for (int value = 0; value < 9; value ++) {
-        for (int i = 0; i < 9; i ++) {
-            int allowed = -1;
-            for (int j= 0; j < 9; j ++) {
-                if (allowedValues[i][j] & (1 << value)) {
-                    if (allowed < 0)
-                        allowed = j;
-                    else {
-                        allowed = -1;
-                        break;
-                    }
-                }
-            }
-            if (allowed >= 0) {
-                cnt += setValue(board, i, allowed, value + 1, allowedValues);
-            }
-        }
-
-        for (int j = 0; j < 9; j ++) {
-            int allowed = -1;
-            for (int i = 0; i < 9; i ++) {
-                if (allowedValues[i][j] & (1 << value)) {
-                    if (allowed < 0)
-                        allowed = i;
-                    else {
-                        allowed = -1;
-                        break;
-                    }
-                }
-            }
-            if (allowed >= 0) {
-                cnt += setValue(board, allowed, j, value + 1, allowedValues);
-            }
-        }
-    }
-    return cnt;
-}
-
 int Sudoku::getMin(int board[][9], int allowedValues[][9]) {
     int index = -1, mini = 10, cnt;
     for (int i = 0; i < 9; i ++) {

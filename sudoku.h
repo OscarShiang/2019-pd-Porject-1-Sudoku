@@ -1,6 +1,9 @@
 #ifndef SUDOKU_H
 #define SUDOKU_H
 
+#include <vector>
+using std::vector;
+
 class Sudoku {
   public:
     // constructor
@@ -27,6 +30,7 @@ class Sudoku {
     void check(int board[][9], int allowedValues[][9]);
     void check(int board[][9], int i, int j, int allowedValues[][9]);
     int fill(int board[][9], int allowedValues[][9]);
+    int lema(int board[][9], int allowedValues[][9]);
     int setValue(int board[][9], int i, int j, int value, int allowedValues[][9]);
     int getMin(int board[][9], int allowedValues[][9]);
     int countLeft(int board[][9]);

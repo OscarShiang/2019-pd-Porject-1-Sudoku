@@ -128,42 +128,45 @@ void Sudoku::solve(int board[][9], int allowedValues[][9]) {
     check(board, allowedValues);
     fill(board, allowedValues);
     if (countLeft(board) > 0) {
-        int pos = getMin(board, allowedValues);
+        bruteforce(board, allowedValues);
+    }
+}
 
-        for (int i = 0; i < 9; i ++) {
-            if (allowedValues[pos / 9][pos % 9] & (1 << i)) {
-                int tmpBoard[9][9], tmpAllowed[9][9];
-                for (int a = 0; a < 9; a ++) {
-                    for (int b = 0; b < 9; b ++) {
-                        tmpBoard[a][b] = board[a][b];
-                        tmpAllowed[a][b] = allowedValues[a][b];
-                    }
-                }
-
-                setValue(board, pos / 9, pos % 9, i + 1, allowedValues);
-                solve(board, allowedValues);
-
-                if (countLeft(board) == 0) {
-                    solCnt ++;
-                    if (solCnt > 1)
-                        return;
-                    for (int a = 0; a < 9; a ++) {
-                        for (int b = 0; b < 9; b ++) {
-                            ans[a][b] = board[a][b];
-                        }
-                    }
-                }
-
-                for (int a = 0; a < 9; a ++) {
-                    for (int b = 0; b < 9; b ++) {
-                        board[a][b] = tmpBoard[a][b];
-                        allowedValues[a][b] = tmpAllowed[a][b];
-                    }
-                }
-                if (allowedValues[pos / 9][pos % 9] & (1 << i)) {
-                    allowedValues[pos / 9][pos % 9] ^= (1 << i);
+void Sudoku::bruteforce(int board[][9], int allowedValues[][9]) {
+    int pos = getMin(board, allowedValues);
+    for (int i = 0; i < 9; i ++) {
+        if (allowedValues[pos / 9][pos % 9] & (1 << i)) {
+            int tmpBoard[9][9], tmpAllowed[9][9];
+            for (int a = 0; a < 9; a ++) {
+                for (int b = 0; b < 9; b ++) {
+                    tmpBoard[a][b] = board[a][b];
+                    tmpAllowed[a][b] = allowedValues[a][b];
                 }
             }
+
+            setValue(board, pos / 9, pos % 9, i + 1, allowedValues);
+            // solve(board, allowedValues);
+            bruteforce(board, allowedValues);
+
+            if (countLeft(board) == 0) {
+                solCnt ++;
+                if (solCnt > 1)
+                    return;
+                for (int a = 0; a < 9; a ++) {
+                    for (int b = 0; b < 9; b ++) {
+                        ans[a][b] = board[a][b];
+                    }
+                }
+            }
+
+            for (int a = 0; a < 9; a ++) {
+                for (int b = 0; b < 9; b ++) {
+                    board[a][b] = tmpBoard[a][b];
+                    allowedValues[a][b] = tmpAllowed[a][b];
+                }
+            }
+            if (allowedValues[pos / 9][pos % 9] & (1 << i))
+                allowedValues[pos / 9][pos % 9] ^= (1 << i);
         }
     }
 }

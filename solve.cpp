@@ -5,6 +5,8 @@ using namespace std;
 Sudoku sudoku;
 
 int main (void) {
+    cin.tie(0);
+    cin.sync_with_stdio(false);
     int board[9][9];
     for (int i = 0; i < 9; i ++) {
         for (int j = 0; j < 9; j ++)

@@ -146,7 +146,7 @@ void Sudoku::bruteforce(int board[][9], int allowedValues[][9]) {
 
             setValue(board, pos / 9, pos % 9, i + 1, allowedValues);
             // solve(board, allowedValues);
-            bruteforce(board, allowedValues);
+            solve(board, allowedValues);
 
             if (countLeft(board) == 0) {
                 solCnt ++;

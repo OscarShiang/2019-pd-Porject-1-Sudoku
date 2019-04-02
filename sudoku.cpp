@@ -6,7 +6,7 @@ using namespace std;
 
 Sudoku::Sudoku() {
     solCnt = 0;
-    memset(board, 0, sizeof(board));
+    memset(board, 0, sizeof(int) * 81);
     for (int i = 0; i < 9; i ++) {
         for (int j = 0; j < 9; j ++)
             allowedValues[i][j] = 511;
@@ -67,7 +67,7 @@ void Sudoku::swapCol(int x, int y) {
 
 void Sudoku::rotate(int x) {
     int tmp[9][9];
-    memset(tmp, 0, sizeof(tmp));
+    memset(tmp, 0, sizeof(int) * 81);
     x %= 4;
     while (x --) {
         for (int i = 0; i < 9; i ++) {

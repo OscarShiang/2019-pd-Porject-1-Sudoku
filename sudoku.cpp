@@ -129,7 +129,6 @@ void Sudoku::solve(int board[][9], int allowedValues[][9]) {
     int left = 81;
     check(board, allowedValues);
     left -= fill(board, allowedValues);
-    // left -= lema(board, allowedValues);
     if (left > 0) {
         int pos = getMin(board, allowedValues);
         bruteforce(board, pos / 9, pos % 9, allowedValues);

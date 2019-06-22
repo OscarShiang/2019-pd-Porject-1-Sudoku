@@ -1,7 +1,8 @@
-# pd2-sudoku
-## Input / Output
+# Sudoku Solver
+This project is written during the Program Design in 2019. This project has the following functions:
+
 ### Generate
-1. Output sudoku problem when execution
+By simply executing the program like `./generate` the program will use the seeds of the sudouku to generate the sudouku puzzle.
 
 #### Example
 ```shell=
@@ -18,9 +19,7 @@ $ ./generate
 ```
 
 ### Transform
-1. input sudoku problem
-2. input transform command
-3. output transformed sudoku
+To use the transform function, you should first enter a sudoku board, and choose the correct mode that you want as the following format:
 
 #### Command Format
 `0` // quit
@@ -63,8 +62,10 @@ $ ./transform
 ```
 
 ### Solve
-1. input sudoku problem
-2. output solved sudoku
+To use the solve function, you only have to enter a sudoku puzzle then it will solve it and output it on to the screen. 
+The whole algorithm is implement as how we solve the sodoku puzzles, by marking the possible answer and start to try the solution using recursive it can solve a difficult puzzle under 1 second, which is much better than the convention backtracking algorithm (referenced from wikipedia)
+
+The input data must be restricted to the following format:
 
 #### Output format
 ```shell=
